@@ -17,7 +17,7 @@
 #include "mahony.h"
 /* TODO: insert other definitions and declarations here. */
 #define SYSTEM_CLOCK (10500000U)
-#define BAUD_RATE (115200U)
+#define BAUD_RATE (9600U)
 #define PIN_SCL_PTB2 (2U)
 #define PIN_SDA_PTB3 (3U)
 #define GPIO_MUX2 (2U)
@@ -62,9 +62,15 @@ int main(void) {
 	    //HEY
 	    PRINTF("Hello World\n");
 	    rtos_i2c_init(g_rtos_i2c_config);
-	   // rtos_i2c_transfer(rtos_i2c_0, &dato, 7, 0x68, 0x00, 7);
-	    rtos_i2c_receive(rtos_i2c_0, &dato, 7, 0x68,0x00, 7);
-
+	    //rtos_i2c_transfer(rtos_i2c_0, &dato, 7, 0xD2, 0x00, 8);
+	    rtos_i2c_receive(rtos_i2c_0, &dato, 8, 0x68,0x00, 8);
+	    /*
+	     *
+	     * ¿length=8?
+	     * ¿subadress es el registro que deseamos leer del modulo?
+	     * 				es decir leer registro 00 regresaria un D1
+	     * 	¿Subsize es el tamaño del dato leído?
+	     */
 
     while(1) {
 
