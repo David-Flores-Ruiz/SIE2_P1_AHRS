@@ -62,8 +62,8 @@ int main(void) {
 	    //HEY
 	    PRINTF("Hello World\n");
 	    rtos_i2c_init(g_rtos_i2c_config);
-	   // rtos_i2c_transfer(rtos_i2c_0, &dato, 7, 0x69, 0x00, 7);
-	    rtos_i2c_receive(rtos_i2c_0, &dato, 7, 0x00, 0x69, 7);
+	   // rtos_i2c_transfer(rtos_i2c_0, &dato, 7, 0x68, 0x00, 7);
+	    rtos_i2c_receive(rtos_i2c_0, &dato, 7, 0x68,0x00, 7);
 
 
     while(1) {
