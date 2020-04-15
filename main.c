@@ -95,10 +95,8 @@ int main(void) {
 
 	    rtos_i2c_init(g_rtos_i2c_config);
 
-	    uint8_t dataToWrite = ACCEL_NORMAL_MODE & GYROS_NORMAL_MODE;	// Byte to write
+	    uint8_t dataToWrite = ACCEL_NORMAL_MODE | GYROS_NORMAL_MODE;	// Byte to write
 	    uint8_t dataRead = 0x00;	// Read byte
-
-//	    rtos_i2c_transfer(rtos_i2c_0, &dataToWrite, 1, BMI160_SLAVE_ADDR_7bits, BMI160_CMD, 	1);
 
 	    rtos_i2c_receive(rtos_i2c_0, &dataRead,    1, BMI160_SLAVE_ADDR_7bits, BMI160_CHIP_ID, 1);
 
@@ -107,6 +105,9 @@ int main(void) {
 			// Subaddress es el registro que deseamos leer del modulo IBM160:
 			// Es decir, leer registro 0x00 debe regresar un 0xD1
 		}
+
+//	    rtos_i2c_transfer(rtos_i2c_0, &dataToWrite, 1, BMI160_SLAVE_ADDR_7bits, BMI160_CMD, 	1);
+
 
 	while (1) {
 
