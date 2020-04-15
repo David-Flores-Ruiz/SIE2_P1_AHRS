@@ -71,7 +71,7 @@ const rtos_i2c_config_t g_rtos_i2c_config = {
 		rtos_i2c_1, 	/**I2C to use*/
 		rtos_i2c_portC,	/**Kinetis Port*/
 		PIN_SCL_PTC10,	/**Pin of Serial Clock*/
-		PIN_SCL_PTC11,	/**Pin of Serial Data*/
+		PIN_SDA_PTC11,	/**Pin of Serial Data*/
 		kPORT_MuxAlt2	/**Pin Configuration*/
 };
 
