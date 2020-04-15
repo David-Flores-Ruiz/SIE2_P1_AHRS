@@ -29,8 +29,8 @@
 /* TODO: insert other definitions and declarations here. */
 #define SYSTEM_CLOCK (10500000U)
 #define BAUD_RATE (9600U)	// 100000 from Chava help
-#define PIN_SCL_PTB2 (2U)
-#define PIN_SDA_PTB3 (3U)
+#define PIN_SCL_PTC10 (10U)
+#define PIN_SDA_PTC11 (11U)
 
 /* The I2C address of the device is 0b 110_1000 (0x68) if the SDO pin is pulled to GND */
 #define BMI160_SLAVE_ADDR_7bits 0x68 // Default I2C 7-bit address of device if SDO = GND
@@ -68,10 +68,10 @@
  */
 const rtos_i2c_config_t g_rtos_i2c_config = {
 		BAUD_RATE, 		/**I2C Baud rate*/
-		rtos_i2c_0, 	/**I2C to use*/
-		rtos_i2c_portB,	/**Kinetis Port*/
-		PIN_SCL_PTB2,	/**Pin of Serial Clock*/
-		PIN_SDA_PTB3,	/**Pin of Serial Data*/
+		rtos_i2c_1, 	/**I2C to use*/
+		rtos_i2c_portC,	/**Kinetis Port*/
+		PIN_SCL_PTC10,	/**Pin of Serial Clock*/
+		PIN_SCL_PTC11,	/**Pin of Serial Data*/
 		kPORT_MuxAlt2	/**Pin Configuration*/
 };
 
