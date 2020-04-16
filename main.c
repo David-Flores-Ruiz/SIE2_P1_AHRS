@@ -33,7 +33,7 @@
 #define PIN_SDA_PTC11 (11U)
 
 /* The I2C address of the device is 0b 110_1000 (0x68) if the SDO pin is pulled to GND */
-#define BMI160_SLAVE_ADDR_7bits 0x68 // Default I2C 7-bit address of device if SDO = GND
+#define BMI160_SLAVE_ADDR_7bits 0x1D // Default I2C 7-bit address of device if SDO = GND
 #define LENGHT (1U)		// 1 Byte Read/Write
 #define SUBSIZE (1U)	// 1 Byte is the size of each Direction Register of the BMI160
 
@@ -98,7 +98,7 @@ int main(void) {
 	    uint8_t dataToWrite = ACCEL_NORMAL_MODE | GYROS_NORMAL_MODE;	// Byte to write
 	    uint8_t dataRead = 0x00;	// Read byte
 
-	    rtos_i2c_receive(rtos_i2c_0, &dataRead,    1, BMI160_SLAVE_ADDR_7bits, BMI160_CHIP_ID, 1);
+	    rtos_i2c_receive(rtos_i2c_1, &dataRead,    1, BMI160_SLAVE_ADDR_7bits, BMI160_CHIP_ID, 1);
 
 		if (dataRead == BMI160_CHIP_ID_VAL) {
 			printf("\nAqui estoy! BMI160... como sensor IMU externo \n");
@@ -106,7 +106,7 @@ int main(void) {
 			// Es decir, leer registro 0x00 debe regresar un 0xD1
 		}
 
-//	    rtos_i2c_transfer(rtos_i2c_0, &dataToWrite, 1, BMI160_SLAVE_ADDR_7bits, BMI160_CMD, 	1);
+//	    rtos_i2c_transfer(rtos_i2c_1, &dataToWrite, 1, BMI160_SLAVE_ADDR_7bits, BMI160_CMD, 	1);
 
 
 	while (1) {
