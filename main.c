@@ -48,7 +48,7 @@
 
 
 /*
- * I2C_0
+ * I2C_1
  * 	PTB2 -SCL AZUL
  * 	PTB3 -SDA
  * 	MODULO IMU
