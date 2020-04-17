@@ -22,18 +22,19 @@
 #include "fsl_debug_console.h"
 
 /* TODO: insert other include files here. */
+#include "task.h"
 #include "rtos_i2c.h"
 #include "rtos_uart.h"
 #include "mahony.h"
 
 /* TODO: insert other definitions and declarations here. */
 #define SYSTEM_CLOCK (10500000U)
-#define BAUD_RATE (9600U)	// 100000 from Chava help
+#define BAUD_RATE (100000)	// 100000 from Chava help antes teniamos 9600
 #define PIN_SCL_PTC10 (10U)
 #define PIN_SDA_PTC11 (11U)
 
 /* The I2C address of the device is 0b 110_1000 (0x68) if the SDO pin is pulled to GND */
-#define BMI160_SLAVE_ADDR_7bits 0x1D // Default I2C 7-bit address of device if SDO = GND
+#define BMI160_SLAVE_ADDR_7bits 0x68 // Default I2C 7-bit address of device if SDO = GND
 #define LENGHT (1U)		// 1 Byte Read/Write
 #define SUBSIZE (1U)	// 1 Byte is the size of each Direction Register of the BMI160
 
@@ -108,6 +109,7 @@ int main(void) {
 
 //	    rtos_i2c_transfer(rtos_i2c_1, &dataToWrite, 1, BMI160_SLAVE_ADDR_7bits, BMI160_CMD, 	1);
 
+		vTaskStartScheduler();
 
 	while (1) {
 
