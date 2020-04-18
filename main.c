@@ -28,14 +28,14 @@
 
 /* TODO: insert other definitions and declarations here. */
 #define SYSTEM_CLOCK (10500000U)
-#define BAUD_RATE (9600U)	// 100000 from Chava help
+#define BAUD_RATE (9600U)
 #define PIN_SCL_PTB2 (2U)
 #define PIN_SDA_PTB3 (3U)
+#define GPIO_MUX2 (2U)
 
-/* The I2C address of the device is 0b 110_1000 (0x68) if the SDO pin is pulled to GND */
-#define BMI160_SLAVE_ADDR_7bits 0x68 // Default I2C 7-bit address of device if SDO = GND
-#define LENGHT (1U)		// 1 Byte Read/Write
-#define SUBSIZE (1U)	// 1 Byte is the size of each Direction Register of the BMI160
+#define BMI160_SLAVE_ADDR 0x68 // Default I2C 7-bit address of device if SDO = GND
+#define LENGHT (8U)		// Byte Read/Write
+#define SUBSIZE (8U)	// Size of each Direction Register of the BMI160
 
 #define BMI160_CMD 0x7E
 #define BMI160_CHIP_ID 0x00	  // This register contains the value 0xD1
@@ -66,15 +66,15 @@
  * 	13 - NC			27 - NC
  * 	14 - NC			28 - NC
  */
-const rtos_i2c_config_t g_rtos_i2c_config = {
-		BAUD_RATE, 		/**I2C Baud rate*/
-		rtos_i2c_0, 	/**I2C to use*/
-		rtos_i2c_portB,	/**Kinetis Port*/
-		PIN_SCL_PTB2,	/**Pin of Serial Clock*/
-		PIN_SDA_PTB3,	/**Pin of Serial Data*/
-		kPORT_MuxAlt2	/**Pin Configuration*/
-};
-
+//const rtos_i2c_config_t g_rtos_i2c_config = {
+//		BAUD_RATE, 		/**I2C Baud rate*/
+//		rtos_i2c_0, 	/**I2C to use*/
+//		rtos_i2c_portB,	/**Kinetis Port*/
+//		PIN_SCL_PTB2,	/**Pin of Serial Clock*/
+//		PIN_SDA_PTB3,	/**Pin of Serial Data*/
+//		GPIO_MUX2		/**Pin Configuration*/
+//};
+rtos_i2c_config_t i2c_config;
 /*
  * @brief   Application entry point.
  */
@@ -89,25 +89,41 @@ int main(void) {
 
 	    PRINTF("Hello World\n");
 
-
+	    i2c_config.SCL_pin = 24;
+	    i2c_config.SDA_pin = 25;
+	    i2c_config.baudrate = 100000;
+	    i2c_config.i2c_number = rtos_i2c_0;
+	    i2c_config.pin_mux = kPORT_MuxAlt5;
+	    i2c_config.port = rtos_i2c_portE;
 
 	    // Inicio de BMI160
 
-	    rtos_i2c_init(g_rtos_i2c_config);
+	    rtos_i2c_init(i2c_config);
 
-	    uint8_t dataToWrite = ACCEL_NORMAL_MODE | GYROS_NORMAL_MODE;	// Byte to write
+	    uint8_t dataToWrite = ACCEL_NORMAL_MODE & GYROS_NORMAL_MODE;	// Byte to write
 	    uint8_t dataRead = 0x00;	// Read byte
 
-	    rtos_i2c_receive(rtos_i2c_0, &dataRead,    1, BMI160_SLAVE_ADDR_7bits, BMI160_CHIP_ID, 1);
+	    rtos_i2c_transfer(rtos_i2c_0, &dataToWrite, 1, 0x69, BMI160_CMD, 	  1);
+
+
+
+
+
+
+	    rtos_i2c_receive(rtos_i2c_0, &dataRead,    8, BMI160_SLAVE_ADDR, BMI160_CHIP_ID, SUBSIZE);
 
 		if (dataRead == BMI160_CHIP_ID_VAL) {
 			printf("\nAqui estoy! BMI160... como sensor IMU externo \n");
-			// Subaddress es el registro que deseamos leer del modulo IBM160:
-			// Es decir, leer registro 0x00 debe regresar un 0xD1
 		}
 
-//	    rtos_i2c_transfer(rtos_i2c_0, &dataToWrite, 1, BMI160_SLAVE_ADDR_7bits, BMI160_CMD, 	1);
 
+	    /*
+	     *
+	     * ¿length=8?
+	     * ¿subadress es el registro que deseamos leer del modulo?
+	     * 				es decir leer registro 00 regresaria un D1
+	     * 	¿Subsize es el tamaño del dato leído?
+	     */
 
 	while (1) {
 
