@@ -33,6 +33,20 @@
 
 
 
+typedef struct {
+	float x;
+	float y;
+	float z;
+}BMI160_accelerometer_data_t;
+
+typedef struct {
+	float x;
+	float y;
+	float z;
+}BMI160_gyroscope_data_t;
+
+
+
 /* TODO: insert function prototypes here. */
 void BMI160_I2C_ReadChipID(void *args);
 

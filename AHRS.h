@@ -10,10 +10,15 @@
 
 /* TODO: insert other include files here. */
 #include <stdint.h>
+#include "fsl_debug_console.h"
+#include "FreeRTOS.h"
+#include "task.h"
+
 #include "rtos_uart.h"
 #include "mahony.h"
 
 /* TODO: insert other definitions and declarations here. */
+#define AHRS_IMU_SAMPLE_TIME 1000
 #define HEADER_VAL 0xAAAAAAAA
 
 typedef struct {
@@ -23,7 +28,14 @@ typedef struct {
 	float z;
 } comm_msg_t;
 
+typedef struct {
+	float x;
+	float y;
+	float z;
+}BMI160_format_data_t;
 
+
+void data_acquisition_task(void * args);
 
 
 

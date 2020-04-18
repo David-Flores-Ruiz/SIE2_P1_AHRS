@@ -7,5 +7,28 @@
 
 #include "AHRS.h"
 
+void data_acquisition_task(void * args)
+{
+	uint32_t seconds = 0;
 
+	TickType_t xLastWakeTime = xTaskGetTickCount();
+
+	BMI160_format_data_t local_accel, local_gyros;
+
+	while (1) {
+		seconds++;
+		PRINTF("\rTime: %i seconds since reset\n",seconds);
+		//read_acc
+		//read_gyros
+
+		// sem
+
+		PRINTF("Leyendo accel \n");
+		PRINTF("Leyendo gyros \n");
+		// sem
+
+
+		vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(AHRS_IMU_SAMPLE_TIME));
+	}
+}
 

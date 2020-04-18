@@ -24,8 +24,13 @@
 /* TODO: insert other include files here. */
 #include "FreeRTOS.h"
 #include "task.h"
+#include "queue.h"
+#include "semphr.h"
+#include "event_groups.h"
 
 #include "BMI160.h"
+#include "AHRS.h"
+
 #include "rtos_uart.h"
 #include "mahony.h"
 
@@ -43,6 +48,14 @@
  * 		18		SCL				Freedom K66F (PTC10)
  */
 
+typedef struct
+{
+	QueueHandle_t queue_freertos;
+	SemaphoreHandle_t mutex_print_freertos;
+	SemaphoreHandle_t semaphore_FreeRTOs;
+	EventGroupHandle_t event_FreeRTOs;
+} parameters_task_t;
+
 int main(void) {
 	/* Init board hardware. */
 	BOARD_InitBootPins();
@@ -53,7 +66,10 @@ int main(void) {
 
 	PRINTF("Hello World\n");
 
-	xTaskCreate(BMI160_I2C_ReadChipID, "BMI160_I2C_ReadChipID", 500, NULL, 1, NULL);
+	static parameters_task_t parameters_task;
+
+//	xTaskCreate(BMI160_I2C_ReadChipID, "BMI160_I2C_ReadChipID", 500, (void*)&parameters_task, configMAX_PRIORITIES, NULL);
+	xTaskCreate(data_acquisition_task, "data_acquisition_task", 500, (void*)&parameters_task, configMAX_PRIORITIES, NULL);
 	vTaskStartScheduler();
 
 	while (1) {
