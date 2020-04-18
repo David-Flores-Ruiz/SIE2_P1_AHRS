@@ -22,111 +22,43 @@
 #include "fsl_debug_console.h"
 
 /* TODO: insert other include files here. */
-#include "rtos_i2c.h"
+#include "FreeRTOS.h"
+#include "task.h"
+
+#include "BMI160.h"
 #include "rtos_uart.h"
 #include "mahony.h"
 
 /* TODO: insert other definitions and declarations here. */
-#define SYSTEM_CLOCK (10500000U)
-#define BAUD_RATE (9600U)
-#define PIN_SCL_PTB2 (2U)
-#define PIN_SDA_PTB3 (3U)
-#define GPIO_MUX2 (2U)
-
-#define BMI160_SLAVE_ADDR 0x68 // Default I2C 7-bit address of device if SDO = GND
-#define LENGHT (8U)		// Byte Read/Write
-#define SUBSIZE (8U)	// Size of each Direction Register of the BMI160
-
-#define BMI160_CMD 0x7E
-#define BMI160_CHIP_ID 0x00	  // This register contains the value 0xD1
-#define BMI160_CHIP_ID_VAL 0xD1
-
-#define ACCEL_NORMAL_MODE 0x11
-#define GYROS_NORMAL_MODE 0x15
-
-
 
 /*
- * I2C_0
- * 	PTB2 -SCL AZUL
- * 	PTB3 -SDA
- * 	MODULO IMU
- * 	1 - VCC 3.3v	15 - NC
- * 	2 - NC			16 - R=2.2k
- * 	3 - GND			17 - R=2.2k
- * 	4 - GND			18 - NC
- * 	5 - NC			19 - NC
- * 	6 - NC			20 - NC
- * 	7 - VCC			21 - NC
- * 	8 - NC			22 - NC
- * 	9 - NC			23 - NC
- * 	10 - NC			24 - NC
- * 	11 - NC			25 - NC
- * 	12 - NC			26 - NC
- * 	13 - NC			27 - NC
- * 	14 - NC			28 - NC
- */
-//const rtos_i2c_config_t g_rtos_i2c_config = {
-//		BAUD_RATE, 		/**I2C Baud rate*/
-//		rtos_i2c_0, 	/**I2C to use*/
-//		rtos_i2c_portB,	/**Kinetis Port*/
-//		PIN_SCL_PTB2,	/**Pin of Serial Clock*/
-//		PIN_SDA_PTB3,	/**Pin of Serial Data*/
-//		GPIO_MUX2		/**Pin Configuration*/
-//};
-rtos_i2c_config_t i2c_config;
-/*
- * @brief   Application entry point.
+ * Physical connections (only 7) of the module BMI160:
+ * Board pin | Signal Name | Logic level
+ * 		1		VDD				3.3v
+ * 		2		VDDIO			3.3v
+ * 		3		GND				GND
+ * 		7		CSB				3.3v 	= Select I2C protocol
+ * 		15		SDO				GND		= Select 7-bits slave address: 0x68
+ * 		17		SDA				Freedom K66F (PTC11)
+ * 		18		SCL				Freedom K66F (PTC10)
  */
 
 int main(void) {
 	/* Init board hardware. */
-	    BOARD_InitBootPins();
-	    BOARD_InitBootClocks();
-	    BOARD_InitBootPeripherals();
-	  	/* Init FSL debug console. */
-	    BOARD_InitDebugConsole();
+	BOARD_InitBootPins();
+	BOARD_InitBootClocks();
+	BOARD_InitBootPeripherals();
+	/* Init FSL debug console. */
+	BOARD_InitDebugConsole();
 
-	    PRINTF("Hello World\n");
+	PRINTF("Hello World\n");
 
-	    i2c_config.SCL_pin = 24;
-	    i2c_config.SDA_pin = 25;
-	    i2c_config.baudrate = 100000;
-	    i2c_config.i2c_number = rtos_i2c_0;
-	    i2c_config.pin_mux = kPORT_MuxAlt5;
-	    i2c_config.port = rtos_i2c_portE;
-
-	    // Inicio de BMI160
-
-	    rtos_i2c_init(i2c_config);
-
-	    uint8_t dataToWrite = ACCEL_NORMAL_MODE & GYROS_NORMAL_MODE;	// Byte to write
-	    uint8_t dataRead = 0x00;	// Read byte
-
-	    rtos_i2c_transfer(rtos_i2c_0, &dataToWrite, 1, 0x69, BMI160_CMD, 	  1);
-
-
-
-
-
-
-	    rtos_i2c_receive(rtos_i2c_0, &dataRead,    8, BMI160_SLAVE_ADDR, BMI160_CHIP_ID, SUBSIZE);
-
-		if (dataRead == BMI160_CHIP_ID_VAL) {
-			printf("\nAqui estoy! BMI160... como sensor IMU externo \n");
-		}
-
-
-	    /*
-	     *
-	     * ¿length=8?
-	     * ¿subadress es el registro que deseamos leer del modulo?
-	     * 				es decir leer registro 00 regresaria un D1
-	     * 	¿Subsize es el tamaño del dato leído?
-	     */
+	xTaskCreate(BMI160_I2C_ReadChipID, "BMI160_I2C_ReadChipID", 500, NULL, 1, NULL);
+	vTaskStartScheduler();
 
 	while (1) {
-
+		// If you fall here it is so bad :(
+		__asm volatile ("nop");
 	}
 
 	return 0;
