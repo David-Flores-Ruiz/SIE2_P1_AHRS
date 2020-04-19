@@ -32,7 +32,24 @@ void BMI160_I2C_ReadChipID(void *args) {
 		PRINTF("Chip ID value =	0x%x \n", dataRead);
 	}
 }
-
+void BMI160_I2C_Read_acc(void *args) {
+	BMI160_accelerometer_data_t data_acc;
+	uint8_t dato_x_lo = 0;/////¿DEBERIA SER FLOAT?
+	uint8_t dato_x_hi = 0;
+	uint8_t dato_y_lo = 0;
+	uint8_t dato_y_hi = 0;
+	uint8_t dato_z_lo = 0;
+	uint8_t dato_z_hi = 0;
+	rtos_i2c_receive(rtos_i2c_1,&dato_x_lo,1,BMI160_SLAVE_ADDR,reg_acc_x_lo, 1);
+	rtos_i2c_receive(rtos_i2c_1,&dato_x_hi,1,BMI160_SLAVE_ADDR,reg_acc_x_hi, 1);
+	rtos_i2c_receive(rtos_i2c_1,&dato_y_lo,1,BMI160_SLAVE_ADDR,reg_acc_y_lo, 1);
+	rtos_i2c_receive(rtos_i2c_1,&dato_y_hi,1,BMI160_SLAVE_ADDR,reg_acc_y_hi, 1);
+	rtos_i2c_receive(rtos_i2c_1,&dato_z_lo,1,BMI160_SLAVE_ADDR,reg_acc_z_lo, 1);
+	rtos_i2c_receive(rtos_i2c_1,&dato_z_hi,1,BMI160_SLAVE_ADDR,reg_acc_z_hi, 1);
+	data_acc.x=(dato_x_hi<<8) + reg_acc_x_lo;
+	data_acc.y=(dato_y_hi<<8) + reg_acc_y_lo;
+	data_acc.z=(dato_z_hi<<8) + reg_acc_z_lo;
+}
 
 	//rtos_i2c_transfer(rtos_i2c_1, &dataToWrite, 1, 0x69, BMI160_CMD, 	  1);
 

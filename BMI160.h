@@ -27,6 +27,18 @@
 #define BMI160_CMD 0x7E	// Register for normal configuration accelerometer/gyroscope
 #define BMI160_CHIP_ID 0x00	   // This register contains the value 0xD1
 #define BMI160_CHIP_ID_VAL 0xD1
+#define reg_gyro_x_lo 0x0C
+#define reg_gyro_x_hi 0x0D
+#define reg_gyro_y_lo 0x0E
+#define reg_gyro_y_hi 0x0F
+#define reg_gyro_z_lo 0x10
+#define reg_gyro_z_hi 0x11
+#define reg_acc_x_lo  0x12
+#define reg_acc_x_hi  0x13
+#define reg_acc_y_lo  0x14
+#define reg_acc_y_hi  0x15
+#define reg_acc_z_lo  0x16
+#define reg_acc_z_hi  0x17
 
 #define ACCEL_NORMAL_MODE 0x11
 #define GYROS_NORMAL_MODE 0x15
@@ -48,7 +60,10 @@ typedef struct {
 
 
 /* TODO: insert function prototypes here. */
+/*Lectura del Chip ID para comprobar que estamos cnectados al dispositivo*/
 void BMI160_I2C_ReadChipID(void *args);
+/*Lectura de los valores del acelerometro*/
+void BMI160_I2C_Read_acc(void *args);
 
 
 
