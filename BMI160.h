@@ -14,6 +14,7 @@
 #include "rtos_i2c.h"
 #include "fsl_debug_console.h"
 #include "fsl_port.h"
+#include "task.h"
 
 
 /* TODO: insert other definitions and declarations here. */
@@ -27,6 +28,7 @@
 #define BMI160_CMD 0x7E	// Register for normal configuration accelerometer/gyroscope
 #define BMI160_CHIP_ID 0x00	   // This register contains the value 0xD1
 #define BMI160_CHIP_ID_VAL 0xD1
+
 #define reg_gyro_x_lo 0x0C
 #define reg_gyro_x_hi 0x0D
 #define reg_gyro_y_lo 0x0E
@@ -60,10 +62,15 @@ typedef struct {
 
 
 /* TODO: insert function prototypes here. */
-/*Lectura del Chip ID para comprobar que estamos cnectados al dispositivo*/
+/*Lectura del Chip ID para comprobar que estamos conectados al dispositivo*/
 void BMI160_I2C_ReadChipID(void *args);
+
 /*Lectura de los valores del acelerometro*/
-void BMI160_I2C_Read_acc(void *args);
+void BMI160_I2C_Read_acc(void);
+
+/*Lectura de los valores del acelerometro*/
+void BMI160_I2C_Read_gyr(void);
+
 
 
 

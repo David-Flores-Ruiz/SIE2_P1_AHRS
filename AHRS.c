@@ -24,7 +24,11 @@ void data_acquisition_task(void * args)
 		// sem
 
 		PRINTF("Leyendo accel \n");
+		BMI160_I2C_Read_acc();
+
 		PRINTF("Leyendo gyros \n");
+		BMI160_I2C_Read_gyr();
+
 		// sem
 
 

@@ -68,8 +68,8 @@ int main(void) {
 
 	static parameters_task_t parameters_task;
 
-//	xTaskCreate(BMI160_I2C_ReadChipID, "BMI160_I2C_ReadChipID", 500, (void*)&parameters_task, configMAX_PRIORITIES, NULL);
-	xTaskCreate(data_acquisition_task, "data_acquisition_task", 500, (void*)&parameters_task, configMAX_PRIORITIES, NULL);
+	xTaskCreate(BMI160_I2C_ReadChipID, "BMI160_I2C_ReadChipID", 500, (void*)&parameters_task, configMAX_PRIORITIES	, NULL);
+	xTaskCreate(data_acquisition_task, "data_acquisition_task", 500, (void*)&parameters_task, configMAX_PRIORITIES-2, NULL);
 	vTaskStartScheduler();
 
 	while (1) {
