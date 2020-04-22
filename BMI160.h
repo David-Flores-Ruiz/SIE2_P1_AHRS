@@ -48,15 +48,15 @@
 
 
 typedef struct {
-	float x;
-	float y;
-	float z;
+	int16_t x;
+	int16_t y;
+	int16_t z;
 }BMI160_accelerometer_data_t;
 
 typedef struct {
-	float x;
-	float y;
-	float z;
+	int16_t x;
+	int16_t y;
+	int16_t z;
 }BMI160_gyroscope_data_t;
 
 
