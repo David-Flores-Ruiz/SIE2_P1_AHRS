@@ -19,6 +19,12 @@
 #include "mahony.h"
 
 /* TODO: insert other definitions and declarations here. */
+#define acc_range 2	// 2g range (reset)
+#define acc_max_val 32768	// INT16 con signo (abs del negativo)
+
+#define gyr_range 2000	// 2°/s range (reset)
+#define gyr_max_val 32768	// INT16 con signo (abs del negativo)
+
 #define AHRS_IMU_SAMPLE_TIME 1000
 #define HEADER_VAL 0xAAAAAAAA
 
@@ -44,6 +50,9 @@ typedef struct {
 
 
 void data_acquisition_task(void * args);
+
+void data_calibration_acc(void);	// Conversion acc to Float
+void data_calibration_gyr(void);	// Conversion gyr to Float
 
 
 

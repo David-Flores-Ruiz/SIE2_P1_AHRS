@@ -88,4 +88,3 @@ BMI160_gyroscope_data_t BMI160_I2C_Read_gyr(void) {
 	PRINTF("BMI160 - Gyros en z: %d \n", data_gyr.z);
 	return data_gyr;
 }
-
