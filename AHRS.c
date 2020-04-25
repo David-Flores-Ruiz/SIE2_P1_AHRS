@@ -29,15 +29,15 @@ void data_acquisition_task(void * args)
 
 		PRINTF("Leyendo accel \n");
 		g_data_acc = BMI160_I2C_Read_acc();
-		PRINTF("Accel en x: %d \n", g_data_acc.x);
-		PRINTF("Accel en y: %d \n", g_data_acc.y);
-		PRINTF("Accel en z: %d \n", g_data_acc.z);
+		PRINTF("AHRS  -  Accel en x: %i \n", g_data_acc.x);
+		PRINTF("AHRS  -  Accel en y: %i \n", g_data_acc.y);
+		PRINTF("AHRS  -  Accel en z: %i \n", g_data_acc.z);
 
 		PRINTF("Leyendo gyros \n");
 		g_data_gyr = BMI160_I2C_Read_gyr();
-		PRINTF("Gyros en x: %d \n", g_data_gyr.x);
-		PRINTF("Gyros en y: %d \n", g_data_gyr.y);
-		PRINTF("Gyros en z: %d \n", g_data_gyr.z);
+		PRINTF("AHRS  -  Gyros en x: %i \n", g_data_gyr.x);
+		PRINTF("AHRS  -  Gyros en y: %i \n", g_data_gyr.y);
+		PRINTF("AHRS  -  Gyros en z: %i \n", g_data_gyr.z);
 
 		// sem
 
