@@ -43,9 +43,9 @@ void BMI160_I2C_ReadChipID(void *args) {
 	vTaskDelay(portMAX_DELAY);
 }
 
-void BMI160_I2C_Read_acc(void) {
+BMI160_accelerometer_data_t BMI160_I2C_Read_acc(void) {
 	BMI160_accelerometer_data_t data_acc;
-	uint8_t dato_x_lo = 0;	/////¿DEBERIA SER FLOAT?
+	uint8_t dato_x_lo = 0;	///// CONVERTIR A FLOAT +-2g range (reset)
 	uint8_t dato_x_hi = 0;
 	uint8_t dato_y_lo = 0;
 	uint8_t dato_y_hi = 0;
@@ -60,11 +60,12 @@ void BMI160_I2C_Read_acc(void) {
 	data_acc.x = (dato_x_hi << 8) + dato_x_lo;
 	data_acc.y = (dato_y_hi << 8) + dato_y_lo;
 	data_acc.z = (dato_z_hi << 8) + dato_z_lo;
+	return data_acc;
 }
 
-void BMI160_I2C_Read_gyr(void) {
-	BMI160_accelerometer_data_t data_acc;
-	uint8_t dato_x_lo = 0;	/////¿DEBERIA SER FLOAT?
+BMI160_gyroscope_data_t BMI160_I2C_Read_gyr(void) {
+	BMI160_gyroscope_data_t data_gyr;
+	uint8_t dato_x_lo = 0;	///// CONVERTIR A FLOAT +-2000°/s range (reset)
 	uint8_t dato_x_hi = 0;
 	uint8_t dato_y_lo = 0;
 	uint8_t dato_y_hi = 0;
@@ -76,8 +77,9 @@ void BMI160_I2C_Read_gyr(void) {
 	rtos_i2c_receive(rtos_i2c_1, &dato_y_hi, 1, BMI160_SLAVE_ADDR, reg_gyro_y_hi, 1);
 	rtos_i2c_receive(rtos_i2c_1, &dato_z_lo, 1, BMI160_SLAVE_ADDR, reg_gyro_z_lo, 1);
 	rtos_i2c_receive(rtos_i2c_1, &dato_z_hi, 1, BMI160_SLAVE_ADDR, reg_gyro_z_hi, 1);
-	data_acc.x = (dato_x_hi << 8) + dato_x_lo;
-	data_acc.y = (dato_y_hi << 8) + dato_y_lo;
-	data_acc.z = (dato_z_hi << 8) + dato_z_lo;
+	data_gyr.x = (dato_x_hi << 8) + dato_x_lo;
+	data_gyr.y = (dato_y_hi << 8) + dato_y_lo;
+	data_gyr.z = (dato_z_hi << 8) + dato_z_lo;
+	return data_gyr;
 }
 

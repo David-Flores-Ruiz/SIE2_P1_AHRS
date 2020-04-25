@@ -14,6 +14,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#include "BMI160.h"
 #include "rtos_uart.h"
 #include "mahony.h"
 
@@ -32,7 +33,14 @@ typedef struct {
 	float x;
 	float y;
 	float z;
-}BMI160_format_data_t;
+}BMI160_float_acc_data_t;
+
+typedef struct {
+	float x;
+	float y;
+	float z;
+}BMI160_float_gyr_data_t;
+
 
 
 void data_acquisition_task(void * args);

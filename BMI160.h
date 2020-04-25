@@ -66,10 +66,10 @@ typedef struct {
 void BMI160_I2C_ReadChipID(void *args);
 
 /*Lectura de los valores del acelerometro*/
-void BMI160_I2C_Read_acc(void);
+BMI160_accelerometer_data_t BMI160_I2C_Read_acc(void);
 
 /*Lectura de los valores del acelerometro*/
-void BMI160_I2C_Read_gyr(void);
+BMI160_gyroscope_data_t BMI160_I2C_Read_gyr(void);
 
 
 
