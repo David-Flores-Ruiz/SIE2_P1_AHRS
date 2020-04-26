@@ -53,7 +53,7 @@ void data_acquisition_task(void * args);
 
 void data_calibration_acc(void);	// Conversion acc to Float
 void data_calibration_gyr(void);	// Conversion gyr to Float
-
+void Ahrs_send_UART_angles_task(void * args);
 
 
 #endif /* AHRS_H_ */
