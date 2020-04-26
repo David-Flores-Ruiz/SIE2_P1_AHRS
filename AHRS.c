@@ -7,6 +7,7 @@
 
 #include "AHRS.h"
 #define PRINTF_OFF 1
+//#define PRUEBA 1
 
 BMI160_accelerometer_data_t g_int16data_acc;	// INT16 CONVERTIR A FLOAT
 BMI160_gyroscope_data_t g_int16data_gyr;	// INT16 CONVERTIR A FLOAT
@@ -95,7 +96,9 @@ void Ahrs_send_UART_angles_task(void * args){
 	config.uart_number = rtos_uart0;
 	config.port = rtos_uart_portB;
 	rtos_uart_init(config);
+	mensaje_a_UART.header = HEADER_VAL;
 
+#ifndef PRUEBA
 	/*La estructura para mensajes tiene un header segun el documento de
 	  la practica debe de ser 0xAAAAAAAA*/
 	mensaje_a_UART.header = HEADER_VAL;
@@ -106,10 +109,11 @@ void Ahrs_send_UART_angles_task(void * args){
 	 * de los datos del sensor y los paso a la estructura de los mensajes
 	 */
 	for(;;){
-	mensaje_a_UART.x = rtos_uart_send(rtos_uart0, &mahony_data.pitch, 1);
-	mensaje_a_UART.y = rtos_uart_send(rtos_uart0, &mahony_data.pitch, 1);
-	mensaje_a_UART.z = rtos_uart_send(rtos_uart0, &mahony_data.pitch, 1);
+	rtos_uart_send(rtos_uart0, &mahony_data.pitch, 1);
+	rtos_uart_send(rtos_uart0, &mahony_data.pitch, 1);
+	rtos_uart_send(rtos_uart0, &mahony_data.pitch, 1);
 	}
+#endif
 }
 
 
