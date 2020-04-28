@@ -109,9 +109,9 @@ void Ahrs_send_UART_angles_task(void * args){
 	 * de los datos del sensor y los paso a la estructura de los mensajes
 	 */
 	for(;;){
+	rtos_uart_send(rtos_uart0, &mahony_data.roll, 1);
 	rtos_uart_send(rtos_uart0, &mahony_data.pitch, 1);
-	rtos_uart_send(rtos_uart0, &mahony_data.pitch, 1);
-	rtos_uart_send(rtos_uart0, &mahony_data.pitch, 1);
+	rtos_uart_send(rtos_uart0, &mahony_data.yaw, 1);
 	}
 #endif
 }
