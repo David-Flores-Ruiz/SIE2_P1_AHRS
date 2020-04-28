@@ -7,7 +7,7 @@
 
 #include "AHRS.h"
 #define PRINTF_OFF 1
-//#define PRUEBA 1
+#define PRUEBA 1
 
 BMI160_accelerometer_data_t g_int16data_acc;	// INT16 CONVERTIR A FLOAT
 BMI160_gyroscope_data_t g_int16data_gyr;	// INT16 CONVERTIR A FLOAT
@@ -84,9 +84,11 @@ void Ahrs_send_UART_angles_task(void * args){
 	rtos_uart_config_t config;
 	comm_msg_t mensaje_a_UART;
 
+#ifndef PRUEBA
 	//Funcion que guarda los datos en estructura roll pitch yaw
 	MahonyAHRSupdateIMU(g_float_gyros.x, g_float_gyros.y, g_float_gyros.z,
 			g_float_accel.x, g_float_accel.y, g_float_accel.z);
+#endif
 
 	//Configuracion de la UART
 	config.baudrate = 115200;
@@ -96,24 +98,19 @@ void Ahrs_send_UART_angles_task(void * args){
 	config.uart_number = rtos_uart0;
 	config.port = rtos_uart_portB;
 	rtos_uart_init(config);
-	mensaje_a_UART.header = HEADER_VAL;
 
-#ifndef PRUEBA
+
 	/*La estructura para mensajes tiene un header segun el documento de
 	  la practica debe de ser 0xAAAAAAAA*/
 	mensaje_a_UART.header = HEADER_VAL;
-	rtos_uart_send(rtos_uart0, mensaje_a_UART.header, 1);
-	/*
-	 * Supuse que al utlizar la funcion MahonyAHRSupdateIMU guarda los
-	 * datos en la estructura por que la siguiente parte es la lectura
-	 * de los datos del sensor y los paso a la estructura de los mensajes
-	 */
+	mensaje_a_UART.x=1.1;
+	mensaje_a_UART.y=1.2;
+	mensaje_a_UART.z=1.3;
+
 	for(;;){
-	rtos_uart_send(rtos_uart0, &mahony_data.roll, 1);
-	rtos_uart_send(rtos_uart0, &mahony_data.pitch, 1);
-	rtos_uart_send(rtos_uart0, &mahony_data.yaw, 1);
+		rtos_uart_send(rtos_uart0, (uint8_t*)&mensaje_a_UART, sizeof(mensaje_a_UART));
 	}
-#endif
+
 }
 
 
