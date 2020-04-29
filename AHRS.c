@@ -8,6 +8,7 @@
 #include "AHRS.h"
 #define PRINTF_OFF 1
 #define PRUEBA 1
+//#define CUBO_ESTATICO_PYTHON 1
 
 BMI160_accelerometer_data_t g_int16data_acc;	// INT16 CONVERTIR A FLOAT
 BMI160_gyroscope_data_t g_int16data_gyr;	// INT16 CONVERTIR A FLOAT
@@ -105,9 +106,12 @@ void Ahrs_send_UART_angles_task(void *args)
 		/*La estructura para mensajes tiene un header según el documento de
 		 la práctica debe de ser 0xAAAAAAAA*/
 		msg.header = HEADER_VAL;
-		msg.x = 1.0;
-		msg.y = 2.0;
-		msg.z = 3.0;
+
+#ifndef CUBO_ESTATICO_PYTHON
+		msg.x = 30.0;
+		msg.y = 40.0;
+		msg.z = 50.0;
+#endif
 
 //#ifndef PRINTF_OFF
 		PRINTF("SEND_UART  -  HEADER: %u \n", msg.header);
