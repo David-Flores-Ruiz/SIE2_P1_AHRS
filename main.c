@@ -35,7 +35,7 @@
 #include "rtos_i2c.h"
 #include "mahony.h"
 
-#define DUBUG_ON 1
+//#define DUBUG_ON 1
 
 /* TODO: insert other definitions and declarations here. */
 /*
@@ -72,7 +72,7 @@ int main(void) {
 
 #ifndef DUBUG_ON
 	xTaskCreate(BMI160_I2C_ReadChipID, "BMI160_I2C_ReadChipID", 500, (void*)&parameters_task, configMAX_PRIORITIES	, NULL);
-	xTaskCreate(data_acquisition_task, "data_acquisition_task", 500, (void*)&parameters_task, configMAX_PRIORITIES-2, NULL);
+	xTaskCreate(data_acquisition_task, "data_acquisition_task", 500, (void*)&parameters_task, configMAX_PRIORITIES, NULL);
 #endif
 
 	xTaskCreate(Ahrs_send_UART_angles_task, "Ahrs_send_UART_angles_task", 500, (void*)&parameters_task, configMAX_PRIORITIES, NULL);

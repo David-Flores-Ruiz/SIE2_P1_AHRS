@@ -8,6 +8,8 @@
 #include "BMI160.h"
 
 
+#define BMI160_PRINTF_OFF 1
+
 
 void BMI160_I2C_ReadChipID(void *args) {
 	rtos_i2c_config_t i2c_config;
@@ -60,9 +62,13 @@ BMI160_accelerometer_data_t BMI160_I2C_Read_acc(void) {
 	data_acc.x = (dato_x_hi << 8) + dato_x_lo;
 	data_acc.y = (dato_y_hi << 8) + dato_y_lo;
 	data_acc.z = (dato_z_hi << 8) + dato_z_lo;
+
+#ifndef BMI160_PRINTF_OFF
 	PRINTF("BMI160 - Accel en x: %d \n", data_acc.x);
 	PRINTF("BMI160 - Accel en y: %d \n", data_acc.y);
 	PRINTF("BMI160 - Accel en z: %d \n", data_acc.z);
+#endif
+
 	return data_acc;
 }
 
@@ -83,8 +89,12 @@ BMI160_gyroscope_data_t BMI160_I2C_Read_gyr(void) {
 	data_gyr.x = (dato_x_hi << 8) + dato_x_lo;
 	data_gyr.y = (dato_y_hi << 8) + dato_y_lo;
 	data_gyr.z = (dato_z_hi << 8) + dato_z_lo;
+
+#ifndef BMI160_PRINTF_OFF
 	PRINTF("BMI160 - Gyros en x: %d \n", data_gyr.x);
 	PRINTF("BMI160 - Gyros en y: %d \n", data_gyr.y);
 	PRINTF("BMI160 - Gyros en z: %d \n", data_gyr.z);
+#endif
+
 	return data_gyr;
 }
