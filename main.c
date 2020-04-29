@@ -32,11 +32,12 @@
 #include "AHRS.h"
 
 #include "rtos_uart.h"
+#include "rtos_i2c.h"
 #include "mahony.h"
 
 #define DUBUG_ON 1
-/* TODO: insert other definitions and declarations here. */
 
+/* TODO: insert other definitions and declarations here. */
 /*
  * Physical connections (only 7) of the module BMI160:
  * Board pin | Signal Name | Logic level
@@ -68,13 +69,13 @@ int main(void) {
 	PRINTF("Hello World\n");
 
 	static parameters_task_t parameters_task;
+
 #ifndef DUBUG_ON
 	xTaskCreate(BMI160_I2C_ReadChipID, "BMI160_I2C_ReadChipID", 500, (void*)&parameters_task, configMAX_PRIORITIES	, NULL);
 	xTaskCreate(data_acquisition_task, "data_acquisition_task", 500, (void*)&parameters_task, configMAX_PRIORITIES-2, NULL);
-	xTaskCreate(data_acquisition_task, "data_acquisition_task", 500, (void*)&parameters_task, configMAX_PRIORITIES-2, NULL);
 #endif
-	xTaskCreate(Ahrs_send_UART_angles_task, "Ahrs_send_UART_angles", 550, NULL,	// ok!
-				configMAX_PRIORITIES, NULL);
+
+	xTaskCreate(Ahrs_send_UART_angles_task, "Ahrs_send_UART_angles_task", 500, (void*)&parameters_task, configMAX_PRIORITIES, NULL);
 
 	vTaskStartScheduler();
 

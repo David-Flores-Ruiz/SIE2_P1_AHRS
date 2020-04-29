@@ -25,7 +25,8 @@
 #define gyr_range 2000	// 2°/s range (reset)
 #define gyr_max_val 32768	// INT16 con signo (abs del negativo)
 
-#define AHRS_IMU_SAMPLE_TIME 1000
+#define AHRS_IMU_SAMPLE_TIME 1000		// 1 second
+#define AHRS_SENDUART_SAMPLE_TIME 5000	// 5 seconds
 #define HEADER_VAL 0xAAAAAAAA
 
 typedef struct {

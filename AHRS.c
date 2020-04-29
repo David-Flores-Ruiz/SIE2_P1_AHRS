@@ -18,33 +18,28 @@ BMI160_float_gyr_data_t g_float_gyros;	// Ready float for Mahony!
 void data_acquisition_task(void * args)
 {
 	uint32_t seconds = 0;
-
 	TickType_t xLastWakeTime = xTaskGetTickCount();
 
 	while (1) {
 		seconds++;
-		PRINTF("\rTime: %i seconds since reset\n", seconds);
-
-		//read_gyros
+		PRINTF("\rACQUI_DATA_Time: %i seconds since reset\n", seconds);
 
 		// sem
 
-		PRINTF("Leyendo accel \n");
 		g_int16data_acc = BMI160_I2C_Read_acc();	// Read IMU accelerometer
+
 #ifndef PRINTF_OFF
 		PRINTF("AHRS  -  Accel en x: %i \n", g_int16data_acc.x);
 		PRINTF("AHRS  -  Accel en y: %i \n", g_int16data_acc.y);
 		PRINTF("AHRS  -  Accel en z: %i \n", g_int16data_acc.z);
 
-		data_calibration_acc();	// Conversion acc to Float
-
-
-		PRINTF("Leyendo gyros \n");
 		g_int16data_gyr = BMI160_I2C_Read_gyr();	// Read IMU gyroscope
 		PRINTF("AHRS  -  Gyros en x: %i \n", g_int16data_gyr.x);
 		PRINTF("AHRS  -  Gyros en y: %i \n", g_int16data_gyr.y);
 		PRINTF("AHRS  -  Gyros en z: %i \n", g_int16data_gyr.z);
 #endif
+
+		data_calibration_acc();	// Conversion acc to Float
 		data_calibration_gyr();	// Conversion gyr to Float
 
 		// sem
@@ -79,18 +74,13 @@ void data_calibration_gyr(void) {
 	PRINTF("FLOAT -  Gyros en z: %u \n", (unsigned) g_float_gyros.z);
 #endif
 }
-void Ahrs_send_UART_angles_task(void * args){
-	MahonyAHRSEuler_t mahony_data;
-	rtos_uart_config_t config;
-	comm_msg_t mensaje_a_UART;
 
-#ifndef PRUEBA
-	//Funcion que guarda los datos en estructura roll pitch yaw
-	MahonyAHRSupdateIMU(g_float_gyros.x, g_float_gyros.y, g_float_gyros.z,
-			g_float_accel.x, g_float_accel.y, g_float_accel.z);
-#endif
+void Ahrs_send_UART_angles_task(void *args)
+{
+	uint32_t seconds = 0;
+	TickType_t xLastWakeTime = xTaskGetTickCount();
 
-	//Configuracion de la UART
+	rtos_uart_config_t config;		// Configuration UART0
 	config.baudrate = 115200;
 	config.rx_pin = 16;
 	config.tx_pin = 17;
@@ -99,18 +89,37 @@ void Ahrs_send_UART_angles_task(void * args){
 	config.port = rtos_uart_portB;
 	rtos_uart_init(config);
 
+	while (1) {
+		seconds += 5;
+		PRINTF("\rSEND_UART_Time: %i seconds since reset\n", seconds);
 
-	/*La estructura para mensajes tiene un header segun el documento de
-	  la practica debe de ser 0xAAAAAAAA*/
-	mensaje_a_UART.header = HEADER_VAL;
-	mensaje_a_UART.x=1.1;
-	mensaje_a_UART.y=1.2;
-	mensaje_a_UART.z=1.3;
+		MahonyAHRSEuler_t local_euler;
+		comm_msg_t msg;
 
-	for(;;){
-		rtos_uart_send(rtos_uart0, (uint8_t*)&mensaje_a_UART, sizeof(mensaje_a_UART));
+#ifndef PRUEBA
+		// Función que retorna los ángulos: yaw, pitch y roll
+		local_euler = MahonyAHRSupdateIMU(g_float_gyros.x, g_float_gyros.y, g_float_gyros.z,
+									g_float_accel.x, g_float_accel.y, g_float_accel.z);
+#endif
+
+		/*La estructura para mensajes tiene un header según el documento de
+		 la práctica debe de ser 0xAAAAAAAA*/
+		msg.header = HEADER_VAL;
+		msg.x = 1.0;
+		msg.y = 2.0;
+		msg.z = 3.0;
+
+//#ifndef PRINTF_OFF
+		PRINTF("SEND_UART  -  HEADER: %u \n", msg.header);
+		PRINTF("SEND_UART  -  Angle YAW:   %u \n", (unsigned) msg.x);
+		PRINTF("SEND_UART  -  Angle PITCH: %u \n", (unsigned) msg.y);
+		PRINTF("SEND_UART  -  Angle ROLL:  %u \n", (unsigned) msg.z);
+//#endif
+
+		rtos_uart_send(rtos_uart0, (uint8_t*) &msg, sizeof(msg));
+
+		vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(AHRS_SENDUART_SAMPLE_TIME));
 	}
-
 }
 
 
