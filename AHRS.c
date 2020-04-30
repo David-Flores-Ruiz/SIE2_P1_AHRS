@@ -58,6 +58,16 @@ void Ahrs_send_UART_angles_task(void *args)
 	uint32_t num_task = 0;
 	TickType_t xLastWakeTime = xTaskGetTickCount();
 	uint8_t x=0;
+
+	uint8_t temp_x [50] = {0};
+			uint8_t temp_y [50] = {0};
+			uint8_t temp_z [50] = {0};
+			 uint8_t cont = 0;
+			uint8_t suma_x = 0, suma_y = 0, suma_z = 0;
+			uint8_t suma_x_prom = 0, suma_y_prom = 0, suma_z_prom = 0;
+			uint8_t var_x,var_y,var_z;
+			uint8_t control_suma = 0;
+
 	rtos_uart_config_t config;		// Configuration UART0
 	config.baudrate = 115200;
 	config.rx_pin = 16;
@@ -92,14 +102,7 @@ void Ahrs_send_UART_angles_task(void *args)
  */
 
 //////////7//probablemente debe de ir fuera del while/////////////////
-		uint8_t temp_x [50] = {0};
-		uint8_t temp_y [50] = {0};
-		uint8_t temp_z [50] = {0};
-		static uint8_t cont = 0;
-		uint8_t suma_x = 0, suma_y = 0, suma_z = 0;
-		uint8_t suma_x_prom = 0, suma_y_prom = 0, suma_z_prom = 0;
-		uint8_t var_x,var_y,var_z;
-		uint8_t control_suma = 0;
+
 //////////7//probablemente debe de ir fuera del while/////////////////
 
 		if(cont<50){
