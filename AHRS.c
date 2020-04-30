@@ -6,11 +6,12 @@
  */
 
 #include "AHRS.h"
-
+#include <math.h>
 
 #define AHRS_PRINTF_OFF 1
 #define PRUEBA_CUBO_ESTATICO_PYTHON 1
 //#define AHRS_ANGLES_UART_PRINTF_OFF 1
+//#define VARIANZA 1
 
 BMI160_accelerometer_data_t g_int16data_acc;	// INT16 CONVERTIR A FLOAT
 BMI160_gyroscope_data_t g_int16data_gyr;	// INT16 CONVERTIR A FLOAT
@@ -56,7 +57,7 @@ void Ahrs_send_UART_angles_task(void *args)
 {
 	uint32_t num_task = 0;
 	TickType_t xLastWakeTime = xTaskGetTickCount();
-
+	uint8_t x=0;
 	rtos_uart_config_t config;		// Configuration UART0
 	config.baudrate = 115200;
 	config.rx_pin = 16;
@@ -81,12 +82,85 @@ void Ahrs_send_UART_angles_task(void *args)
 		local_euler = MahonyAHRSupdateIMU(g_float_gyros.x, g_float_gyros.y, g_float_gyros.z,
 									g_float_accel.x, g_float_accel.y, g_float_accel.z);
 
+#ifndef VARIANZA
+/*
+ * Ecuacion de varianza tomada solo para 50 muestras
+ *      ______________________________
+ * =   /sumatoria(muestra - prom )^2
+ * 	  /	__________________________
+ * 	\/			N-1
+ */
+
+//////////7//probablemente debe de ir fuera del while/////////////////
+		uint8_t temp_x [50] = {0};
+		uint8_t temp_y [50] = {0};
+		uint8_t temp_z [50] = {0};
+		static uint8_t cont = 0;
+		uint8_t suma_x = 0, suma_y = 0, suma_z = 0;
+		uint8_t suma_x_prom = 0, suma_y_prom = 0, suma_z_prom = 0;
+		uint8_t var_x,var_y,var_z;
+		uint8_t control_suma = 0;
+//////////7//probablemente debe de ir fuera del while/////////////////
+
+		if(cont<50){
+			msg.x = local_euler.yaw;
+			msg.y = local_euler.pitch;
+			msg.z = local_euler.roll;
+			temp_x[cont]=local_euler.yaw;
+			temp_y[cont]=local_euler.pitch;
+			temp_z[cont]=local_euler.roll;
+			cont++;
+		}else {
+///////////////Calculo de promedio  INICIO///////////////////
+			//Calculo de la suma de los 50 valores tomados
+			for (control_suma=0;control_suma++;control_suma=50)
+			{
+				suma_x=suma_x+temp_x[control_suma];
+				suma_y=suma_y+temp_y[control_suma];
+				suma_z=suma_z+temp_z[control_suma];
+			}
+			//Calculo de la division que calcula el promedio de las 50 muestras
+			suma_x_prom=suma_x/control_suma;
+			suma_y_prom=suma_y/control_suma;
+			suma_z_prom=suma_z/control_suma;
+///////////////Calculo de promedio  FIN///////////////////
+///////////////Calculo varianza   INCIO///////////////////
+			for (control_suma=0;control_suma++;control_suma=50)
+			{
+				temp_x[control_suma]=temp_x[control_suma]-suma_x_prom;
+				temp_y[control_suma]=temp_y[control_suma]-suma_y_prom;
+				temp_z[control_suma]=temp_z[control_suma]-suma_z_prom;
+
+				temp_x[control_suma]=temp_x[control_suma]*temp_x[control_suma];
+				temp_y[control_suma]=temp_y[control_suma]*temp_y[control_suma];
+				temp_z[control_suma]=temp_z[control_suma]*temp_z[control_suma];
+
+				var_x=var_x+temp_x[control_suma];
+				var_y=var_y+temp_y[control_suma];
+				var_z=var_z+temp_z[control_suma];
+			}
+			var_x=sqrt(var_x/50);
+			var_y=sqrt(var_y/50);
+			var_z=sqrt(var_z/50);
+			msg.x = var_x;
+			msg.y = var_y;
+			msg.z = var_z;
+			cont=0;
+		}
+///////////////Calculo varianza   FIN///////////////////
+
+
+
+
+#endif
+
+#ifndef PRUEBA_CUBO_ESTATICO_PYTHON
 		msg.x = local_euler.yaw;
 		msg.y = local_euler.pitch;
 		msg.z = local_euler.roll;
 
-#ifndef PRUEBA_CUBO_ESTATICO_PYTHON
-		msg.x = 30.0;
+
+		msg.x = x;
 		msg.y = 40.0;
 		msg.z = 50.0;
 #endif
@@ -99,7 +173,7 @@ void Ahrs_send_UART_angles_task(void *args)
 #endif
 
 		rtos_uart_send(rtos_uart0, (uint8_t*) &msg, sizeof(msg));
-
+		x++;
 		vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(AHRS_SENDUART_SAMPLE_TIME));
 	}
 }
