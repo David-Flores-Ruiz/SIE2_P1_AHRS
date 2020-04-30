@@ -160,7 +160,7 @@ void Ahrs_send_UART_angles_task(void *args)
 		msg.z = local_euler.roll;
 
 
-		msg.x = x;
+		msg.x = 30.0;
 		msg.y = 40.0;
 		msg.z = 50.0;
 #endif
@@ -173,7 +173,6 @@ void Ahrs_send_UART_angles_task(void *args)
 #endif
 
 		rtos_uart_send(rtos_uart0, (uint8_t*) &msg, sizeof(msg));
-		x++;
 		vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(AHRS_SENDUART_SAMPLE_TIME));
 	}
 }
