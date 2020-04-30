@@ -8,7 +8,9 @@
 #include "AHRS.h"
 
 
-#define AHRS_PRINTF_OFF 1
+#define AHRS_INT16_PRINTF_OFF 1
+#define AHRS_FLOAT_PRINTF_OFF 1
+//#define AHRS_ARGSMAHONY_PRINTF_OFF 1
 #define PRUEBA_CUBO_ESTATICO_PYTHON 1
 //#define AHRS_ANGLES_UART_PRINTF_OFF 1
 
@@ -33,7 +35,7 @@ void data_acquisition_task(void * args)
 		g_int16data_acc = BMI160_I2C_Read_acc();	// Read IMU accelerometer
 		g_int16data_gyr = BMI160_I2C_Read_gyr();	// Read IMU gyroscope
 
-#ifndef AHRS_PRINTF_OFF
+#ifndef AHRS_INT16_PRINTF_OFF
 		PRINTF("AHRS  -  Accel en x: %i \n", g_int16data_acc.x);
 		PRINTF("AHRS  -  Accel en y: %i \n", g_int16data_acc.y);
 		PRINTF("AHRS  -  Accel en z: %i \n", g_int16data_acc.z);
@@ -77,6 +79,11 @@ void Ahrs_send_UART_angles_task(void *args)
 		 la práctica debe de ser 0xAAAAAAAA*/
 		msg.header = HEADER_VAL;
 
+#ifndef AHRS_ARGSMAHONY_PRINTF_OFF
+	PRINTF("PARAM - Mahony ACCEL en x: %u \n", (unsigned) g_float_accel.x);
+	PRINTF("PARAM - Mahony GYROS en x: %u \n", (unsigned) g_float_gyros.x);
+#endif
+
 		// Función que retorna los ángulos: yaw, pitch y roll
 		local_euler = MahonyAHRSupdateIMU(g_float_gyros.x, g_float_gyros.y, g_float_gyros.z,
 									g_float_accel.x, g_float_accel.y, g_float_accel.z);
@@ -111,7 +118,7 @@ void data_calibration_acc(void) {
 	g_float_accel.y = (float) g_int16data_acc.y * factorConvert_accel;
 	g_float_accel.z = (float) g_int16data_acc.z * factorConvert_accel;
 
-#ifndef AHRS_PRINTF_OFF
+#ifndef AHRS_FLOAT_PRINTF_OFF
 	PRINTF("FLOAT -  Accel en x: %u \n", (unsigned) g_float_accel.x);
 	PRINTF("FLOAT -  Accel en y: %u \n", (unsigned) g_float_accel.y);
 	PRINTF("FLOAT -  Accel en z: %u \n", (unsigned) g_float_accel.z);
@@ -125,7 +132,7 @@ void data_calibration_gyr(void) {
 	g_float_gyros.y = (float) g_int16data_gyr.y * factorConvert_gyros;
 	g_float_gyros.z = (float) g_int16data_gyr.z * factorConvert_gyros;
 
-#ifndef AHRS_PRINTF_OFF
+#ifndef AHRS_FLOAT_PRINTF_OFF
 	PRINTF("FLOAT -  Gyros en x: %u \n", (unsigned) g_float_gyros.x);
 	PRINTF("FLOAT -  Gyros en y: %u \n", (unsigned) g_float_gyros.y);
 	PRINTF("FLOAT -  Gyros en z: %u \n", (unsigned) g_float_gyros.z);
