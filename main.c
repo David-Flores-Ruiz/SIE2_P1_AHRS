@@ -50,14 +50,6 @@
  * 		18		SCL				Freedom K66F (PTC10)
  */
 
-typedef struct
-{
-	QueueHandle_t queue_freertos;
-	SemaphoreHandle_t mutex_print_freertos;
-	SemaphoreHandle_t semaphore_FreeRTOs;
-	EventGroupHandle_t event_FreeRTOs;
-} parameters_task_t;
-
 int main(void) {
 	/* Init board hardware. */
 	BOARD_InitBootPins();
@@ -70,12 +62,13 @@ int main(void) {
 
 	static parameters_task_t parameters_task;
 
-#ifndef DUBUG_ON
-	xTaskCreate(BMI160_I2C_ReadChipID, "BMI160_I2C_ReadChipID", 500, (void*)&parameters_task, configMAX_PRIORITIES	, NULL);
-	xTaskCreate(data_acquisition_task, "data_acquisition_task", 500, (void*)&parameters_task, configMAX_PRIORITIES, NULL);
-#endif
+	parameters_task.mutex_ADQUISITION_freertos = xSemaphoreCreateMutex();
+	parameters_task.mutex_SEND_UART_freertos = xSemaphoreCreateMutex();
+	parameters_task.event_FreeRTOs = xEventGroupCreate();
 
-	xTaskCreate(Ahrs_send_UART_angles_task, "Ahrs_send_UART_angles_task", 500, (void*)&parameters_task, configMAX_PRIORITIES, NULL);
+#ifndef DUBUG_ON
+	xTaskCreate(BMI160_I2C_ReadChipID, "BMI160_I2C_ReadChipID", 200, (void*)&parameters_task, configMAX_PRIORITIES, NULL);
+#endif
 
 	vTaskStartScheduler();
 

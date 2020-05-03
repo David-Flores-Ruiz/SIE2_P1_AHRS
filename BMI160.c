@@ -12,6 +12,8 @@
 
 
 void BMI160_I2C_ReadChipID(void *args) {
+	parameters_task_t parameters_task = *((parameters_task_t*)args);
+
 	rtos_i2c_config_t i2c_config;
 
     i2c_config.baudrate = 100000;		/**I2C Baud rate*/
@@ -38,9 +40,12 @@ void BMI160_I2C_ReadChipID(void *args) {
 	//vTaskDelay(pdMS_TO_TICKS(80));
 
 	if (dataRead == BMI160_CHIP_ID_VAL) {
-		PRINTF("Aqui estoy! BMI160... como sensor IMU externo \n");
-		PRINTF("Chip ID value =	0x%x \n", dataRead);
+		PRINTF("Hey:) Aqui estoy! BMI160... como sensor IMU externo \n");
+		PRINTF("---		Chip ID value =	0x%x 		---   \n", dataRead);
 	}
+
+	xTaskCreate(data_acquisition_task, 		"data_acquisition_task", 	  800, (void*)&parameters_task, configMAX_PRIORITIES, NULL);
+	xTaskCreate(Ahrs_send_UART_angles_task, "Ahrs_send_UART_angles_task", 800, (void*)&parameters_task, configMAX_PRIORITIES, NULL);
 
 	vTaskDelay(portMAX_DELAY);
 }

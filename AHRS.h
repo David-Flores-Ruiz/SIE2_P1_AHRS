@@ -10,9 +10,12 @@
 
 /* TODO: insert other include files here. */
 #include <stdint.h>
+#include <stdbool.h>
 #include "fsl_debug_console.h"
 #include "FreeRTOS.h"
+#include "semphr.h"
 #include "task.h"
+#include "event_groups.h"
 
 #include "BMI160.h"
 #include "rtos_uart.h"
@@ -25,9 +28,9 @@
 #define gyr_max_val 32768	// INT16 con signo (abs del negativo)
 
 #define HEADER_VAL 0xAAAAAAAA
-#define AHRS_IMU_SAMPLE_TIME 	20			// 20 ms --- f= 50 Hz
-#define AHRS_SENDUART_SAMPLE_TIME 	50		// 50 ms --- f= 12.5 Hz
-
+#define AHRS_IMU_SAMPLE_TIME 	20			// 10 ms  --- 	f= 100 Hz
+//#define AHRS_SENDUART_SAMPLE_TIME 	50	//				f= 100 Hz / N
+#define EVENT_MUESTRASREADY    (1 << 0)
 
 typedef struct {
 	uint32_t header;
@@ -49,12 +52,8 @@ typedef struct {
 }BMI160_float_gyr_data_t;
 
 
-
-void data_acquisition_task(void * args);
-
 void data_calibration_acc(void);	// Conversion acc to Float
 void data_calibration_gyr(void);	// Conversion gyr to Float
-void Ahrs_send_UART_angles_task(void * args);
 
 
 #endif /* AHRS_H_ */

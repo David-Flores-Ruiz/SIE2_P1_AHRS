@@ -14,7 +14,11 @@
 #include "rtos_i2c.h"
 #include "fsl_debug_console.h"
 #include "fsl_port.h"
+
+#include "FreeRTOS.h"
+#include "semphr.h"
 #include "task.h"
+#include "event_groups.h"
 
 
 /* TODO: insert other definitions and declarations here. */
@@ -60,8 +64,14 @@ typedef struct {
 }BMI160_gyroscope_data_t;
 
 
+typedef struct
+{
+	SemaphoreHandle_t mutex_ADQUISITION_freertos;
+	SemaphoreHandle_t mutex_SEND_UART_freertos;
+	EventGroupHandle_t event_FreeRTOs;
+} parameters_task_t;
 
-/* TODO: insert function prototypes here. */
+
 /*Lectura del Chip ID para comprobar que estamos conectados al dispositivo*/
 void BMI160_I2C_ReadChipID(void *args);
 
@@ -72,6 +82,8 @@ BMI160_accelerometer_data_t BMI160_I2C_Read_acc(void);
 BMI160_gyroscope_data_t BMI160_I2C_Read_gyr(void);
 
 
+void data_acquisition_task(void *args);
+void Ahrs_send_UART_angles_task(void *args);
 
 
 #endif /* BMI160_H_ */
